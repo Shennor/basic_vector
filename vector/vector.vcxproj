@@ -140,10 +140,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="basic_vector.c" />
+    <ClCompile Include="float_vector.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="string_vector.c" />
+    <ClCompile Include="test_basic_vector.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="basic_vector.h" />
+    <ClInclude Include="float_vector.h" />
+    <ClInclude Include="string_vector.h" />
+    <ClInclude Include="test_basic_vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

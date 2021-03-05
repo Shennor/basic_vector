@@ -21,9 +21,27 @@
     <ClCompile Include="basic_vector.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="test_basic_vector.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="float_vector.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="string_vector.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="basic_vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="test_basic_vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="float_vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="string_vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

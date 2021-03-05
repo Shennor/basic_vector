@@ -3,6 +3,7 @@
 #include "stdbool.h"
 
 extern short ERROR;
+
 // Error list:
 // 10 - (push_back) memory allocation returned NULL
 // 11 - (resize) memory allocation returned NULL
@@ -55,15 +56,15 @@ struct basic_vector
 struct basic_vector* concatenate(struct basic_vector* const one,
 	struct basic_vector* const other);
 
-//
+// qsort
 void sort(struct basic_vector* this, int (*comp)(const void*, const void*));
 
-//
+// map and push_back result to another vector
 void map_back(const struct basic_vector* const src,
 	void* (*f)(void*),
 	struct basic_vector* const dst);
 
-//
+// map and create new vector of results
 struct basic_vector* map_new(const struct basic_vector* const src,
 	void* /*t*/ (*f)(void* /*u*/), const size_t second_element_size);
 
@@ -78,8 +79,3 @@ struct basic_vector* CreateVectorN(const size_t size,
 	const size_t element_size);
 // empty vector - neutral element
 struct basic_vector* CreateVector0(const size_t element_size);
-// 
-struct basic_vector* clone(const struct basic_vector* const v);
-
-// test all functions
-void test_all();
