@@ -1,8 +1,9 @@
 #include "basic_vector.h"
 #include "test_basic_vector.h"
+#include "string_vector.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include "float_vector.h"
 
 int EPS = INT_MAX;
 
@@ -59,7 +60,7 @@ struct basic_vector* set_automatic_data(struct basic_vector* a, bool is_float)
 	{
 		if (is_float)
 		{
-			float j = (float)(rand() % 30) / 10;
+			float j = (float)(rand() % 10000) / 100;
 			a->set(a, i, &j, sizeof(j));
 		}
 		else
@@ -135,18 +136,8 @@ struct basic_vector* create_vector_float_string(bool is_float)
 		print_vector(a, is_float);
 	}
 	else
-	{
 		set_input_data(a, is_float);
-		print_vector(a, is_float);
-	}
 	return a;
-}
-
-int compare(const void* a, const void* b)
-{
-	float fa = *(const float*)a;
-	float fb = *(const float*)b;
-	return (fa > fb) - (fa < fb);
 }
 
 bool hgf(const float* a)
@@ -164,9 +155,9 @@ void sort_interface()
 		printf("%s", "So now we gonna sort this poor vector!!!"
 			" Get ready, my friend. O-o-oh, okay. We'll start\n");
 		if (is_float)
-			sort(a, compare);
+			sort(a, float_cmp_for_vector);
 		else
-			sort(a, strcmp);
+			sort(a, string_cmp_for_vector);
 		printf("%s", "Our vector is sorted now *=* \n");
 		print_vector(a, is_float);
 		a->delete(a);
@@ -233,11 +224,21 @@ int main()
 	
 	printf("%s", "Hello! Let's test the structure basic_vector! *.*\n");
 
-	//test sort
+	// sort
 	sort_interface();
-		
-	// test concatenation
+	printf("\n");
+	
+	// concatenation
 	concatenation_interface();
+	printf("\n");
+	
+	// map
 
+	printf("\n");
+
+	// where
+
+	printf("\n");
+	
 	return 0;
 }
