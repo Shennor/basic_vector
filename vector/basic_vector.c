@@ -1,4 +1,6 @@
-﻿#include "basic_vector.h"
+﻿// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+#include "basic_vector.h"
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -61,13 +63,13 @@ void null_elements(void* element, size_t num,
 
 int8_t* expand(struct basic_vector* const this, size_t new_space)
 {
-	this->elements =
-		(int8_t*)realloc(this->elements,
+	int8_t* tmp_p = (int8_t*)realloc(this->elements,
 			this->_element_size * new_space);
-	if (this->elements == NULL)
+	if (tmp_p == NULL)
 	{
 		return NULL;
 	}
+	this->elements = tmp_p;
 	null_elements(this->elements + this->_space * this->_element_size,
 		new_space - this->_space, this->_element_size);
 	this->_space = new_space;
@@ -221,14 +223,14 @@ void map_back(const struct basic_vector* const src,
 
 // f: T -> U map(f, l) returns new vector
 struct basic_vector* map_new(const struct basic_vector* const src,
-	void* /*t*/ (*f)(void* /*u*/), const size_t second_element_size)
+	const void* /*t*/ (*f)(const void* /*u*/), const size_t second_element_size)
 {
 	struct basic_vector* res = CreateVectorN(src->size, second_element_size);
 	size_t i = 0;
 	for (; i < src->size; ++i)
 	{
 		res->set(res, i, 
-			f(src->elements + i * src->_element_size), second_element_size);
+			f(get(src, i)), second_element_size);
 	}
 	return res;
 }
@@ -281,6 +283,7 @@ struct basic_vector* CreateVectorN(const size_t size,
 		if (v->elements == NULL)
 		{
 			ERROR = 12;
+			free(v);
 			return NULL;
 		}
 	}
@@ -300,25 +303,3 @@ struct basic_vector* CreateVector0(const size_t element_size)
 {
 	return CreateVectorN(0, element_size);
 }
-
-/*
-struct basic_vector* CreateVectorFromList(size_t element_size)
-{
-	struct basic_vector* v = 
-		(struct basic_vector*)malloc(sizeof(struct basic_vector));
-
-	if (v == NULL) 
-		return NULL;
-	
-	v->_element_size = element_size;
-	v->_space = 
-	v->elements = NULL;
-	v->size = 0;
-	v->begin = begin;
-	v->end = end;
-	v->get = get;
-	v->set = set;
-	v->push_back = push_back;
-	return v;
-}
-*/

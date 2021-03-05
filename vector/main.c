@@ -1,8 +1,12 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 #include "basic_vector.h"
 #include "test_basic_vector.h"
 #include "string_vector.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <time.h>
 #include "float_vector.h"
 
 int EPS = INT_MAX;
@@ -140,9 +144,23 @@ struct basic_vector* create_vector_float_string(bool is_float)
 	return a;
 }
 
-bool hgf(const float* a)
+bool float_is_more_than_50(const float* a)
 {
-	return *a > 6;
+	return *a > 50;
+}
+bool string_begins_with_b(const char* a)
+{
+	if (strlen(a) == 0)
+		return false;
+	return a[0] == 'b';
+}
+const void* float_to_string(const void* a)
+{
+	char** str = malloc(sizeof(char**));
+	*str = calloc(sizeof(char), 2);
+	int b = *(float*)a;
+	**str = (char)(b + 'a');
+	return (void*)str;
 }
 
 void sort_interface()
@@ -164,14 +182,13 @@ void sort_interface()
 		while (1) {
 			int resp = 0;
 			printf("%s", "Print 1 if you want to repeat "
-				"sort test and 2 in another way\n");
+				"sort test and 2 in another way. Next stage is"
+				" concatenation testing.\n");
 			scanf_s("%d", &resp);
 			switch (resp)
 			{
 			case 2: return;
-			case 1:
-				goto label1;
-				break;
+			case 1: goto label1;
 			default:
 				printf("%s", "You've chosen wrong number!"
 					"Start again -.- \n");
@@ -187,7 +204,8 @@ void concatenation_interface()
 	printf("%s", "Let's test concatenation.\n");
 	while(1)
 	{
-		printf("%s", "We'll create two vectors with one type of elements\n");
+		printf("%s", "We'll create two vectors with "
+			"one type of elements\n");
 		bool is_float = ask_vector_type_is_float();
 		printf("%s", "First vector:\n");
 		struct basic_vector* a = create_vector_float_string(is_float);
@@ -199,12 +217,13 @@ void concatenation_interface()
 		while (1) {
 			int resp = 0;
 			printf("%s", "Print 1 if you want to repeat "
-				"sort test and 2 in another way\n");
+				"concatenation test and 2 in another way. Next stage is "
+				"map testing.\n");
 			scanf_s("%d", &resp);
 			switch (resp)
 			{
 			case 2: return;
-			case 1: break;
+			case 1: goto label2;
 			default:
 				printf("%s", "You've chosen wrong number!"
 					"Start again -.- \n");
@@ -216,13 +235,88 @@ void concatenation_interface()
 	}
 }
 
+void map_interface()
+{
+	printf("%s", "Let's test map.\n");
+	while (1)
+	{
+		printf("%s", "We have function float -> string."
+			" Let's create vector of float\n");
+		bool is_float = true;
+		struct basic_vector* a = create_vector_float_string(is_float);
+		struct basic_vector* b = map_new(a, float_to_string,
+			sizeof(char*));
+		printf("%s", "Now we created vector-result of map. \n"
+			" Here it is: \n");
+		print_vector(b, false);
+		while (1) {
+			int resp = 0;
+			printf("%s", "Print 1 if you want to repeat "
+				"map test and 2 in another way. Next stage is "
+				"where testing.\n");
+			scanf_s("%d", &resp);
+			switch (resp)
+			{
+			case 2: return;
+			case 1: goto label2;
+			default:
+				printf("%s", "You've chosen wrong number!"
+					"Start again -.- \n");
+				goto label2;
+			}
+		}
+	label2:
+		continue;
+	}
+}
+
+void where_interface()
+{
+	printf("%s", "Let's test where.\n");
+	while (1)
+	{
+		printf("%s", "We have functions (if (float) > 50) and"
+			" (if (string)[1] == 'b'). Let's create vector and test where.\n");
+		bool is_float = ask_vector_type_is_float();
+		struct basic_vector* a = create_vector_float_string(is_float);
+		struct basic_vector* b = is_float ? 
+			CreateVector0(sizeof(float)) :
+			CreateVector0(sizeof(char*));
+		is_float ? where(a, float_is_more_than_50, b) :
+			where(a, string_begins_with_b, b);
+		printf("%s", "Now we created vector-result of where. \n"
+			" Here it is: \n");
+		print_vector(b, is_float);
+		while (1) {
+			int resp = 0;
+			printf("%s", "Print 1 if you want to repeat "
+				"where test and 2 in another way. This is final"
+				" stage of program.\n");
+			scanf_s("%d", &resp);
+			switch (resp)
+			{
+			case 2: return;
+			case 1: goto label2;
+			default:
+				printf("%s", "You've chosen wrong number!"
+					"Start again -.- \n");
+			}
+		}
+	label2:
+		continue;
+	}
+}
+
 int main()
 {
+	srand(time(0));
+	
 	// basic tests
 	
 	test_all();
 	
 	printf("%s", "Hello! Let's test the structure basic_vector! *.*\n");
+	printf("\n");
 
 	// sort
 	sort_interface();
@@ -233,12 +327,14 @@ int main()
 	printf("\n");
 	
 	// map
-
+	map_interface();
 	printf("\n");
-
+	
 	// where
-
+	where_interface();
 	printf("\n");
+	
+	printf("%s", "We've tested basic functions for basic_vector. Thank you! *+* \n");
 	
 	return 0;
 }

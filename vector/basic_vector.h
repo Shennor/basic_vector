@@ -66,9 +66,9 @@ void map_back(const struct basic_vector* const src,
 
 // map and create new vector of results
 struct basic_vector* map_new(const struct basic_vector* const src,
-	void* /*t*/ (*f)(void* /*u*/), const size_t second_element_size);
+	const void* /*t*/ (*f)(const void* /*u*/), const size_t second_element_size);
 
-// 
+//  f: T -> Bool map(f, l) where writes result to existing vector
 struct basic_vector* where(const struct basic_vector* const src, bool (*f)(void*),
 	struct basic_vector* const dst);
 

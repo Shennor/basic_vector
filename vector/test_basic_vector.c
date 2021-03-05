@@ -1,7 +1,11 @@
-﻿#include <assert.h>
+﻿// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+#include <assert.h>
 #include <stdlib.h>
 #include "basic_vector.h"
 #include "test_basic_vector.h"
+#include <string.h>
+#include "string_vector.h"
 
 void test_constructors()
 {
@@ -69,23 +73,19 @@ void test_set_get()
 
 	struct basic_vector* v1 =
 		CreateVectorN(3, sizeof(char*));
-	char* s1 = malloc(6 * sizeof(char));
-	char* s2 = malloc(7 * sizeof(char));
-	char* s3 = malloc(6 * sizeof(char));
-	s1 = "mother";
-	s2 = "brother";
-	s3 = "sister";
+	char* s1 = "mother";
+	char* s2 = "brother";
+	char* s3 = "sister";
 	v1->set(v1, 0, &s1, sizeof(s1));
 	v1->set(v1, 1, &s2, sizeof(s2));
 	v1->set(v1, 2, &s3, sizeof(s3));
-	assert(*(char**)v1->get(v1, 0) == "mother");
-	assert(*(char**)v1->get(v1, 1) == "brother");
-	assert(*(char**)v1->get(v1, 2) == "sister");
+	assert(strcmp(*(char**)v1->get(v1, 0), "mother") == 0);
+	assert(strcmp(*(char**)v1->get(v1, 1), "brother") == 0);
+	assert(strcmp(*(char**)v1->get(v1, 2), "sister") == 0);
 	assert(*(char**)v1->get(v1, 0) == s1);
 	assert(*(char**)v1->get(v1, 1) == s2);
 	assert(*(char**)v1->get(v1, 2) == s3);
 	v1->delete(v1);
-	
 }
 
 void test_push_back()
@@ -95,20 +95,47 @@ void test_push_back()
 	char a = 'a';
 	v->push_back(v, &a, sizeof(a));
 	assert(v->size == 5);
-	assert(*(char*)v->get(v, 4) == a);
+	a = 'b';
+	v->push_back(v, &a, sizeof(a));
+	assert(v->size == 6);
+	assert(*(char*)v->get(v, 0) == '\0');
+	assert(*(char*)v->get(v, 1) == '\0');
+	assert(*(char*)v->get(v, 2) == '\0');
+	assert(*(char*)v->get(v, 3) == '\0');
+	assert(*(char*)v->get(v, 4) == 'a');
+	assert(*(char*)v->get(v, 5) == 'b');
+	v->delete(v);
 }
 
 void test_resize()
 {
 	struct basic_vector* v = CreateVector0(sizeof(int));
 	v->resize(v, 5);
-	assert(*(int*)v->get(v, 3) == 0);
 	assert(v->size == 5);
+	assert(*(int*)v->get(v, 0) == 0);
+	assert(*(int*)v->get(v, 1) == 0);
+	assert(*(int*)v->get(v, 2) == 0);
+	assert(*(int*)v->get(v, 3) == 0);
+	assert(*(int*)v->get(v, 4) == 0);
 	int a = 100;
+	v->set(v, 0, &a, sizeof(a));
+	a++;
+	v->set(v, 1, &a, sizeof(a));
+	a++;
+	v->set(v, 2, &a, sizeof(a));
+	a++;
+	v->set(v, 3, &a, sizeof(a));
+	a++;
 	v->set(v, 4, &a, sizeof(a));
 	v->resize(v, 2);
+	assert(v->size == 2);
 	v->resize(v, 5);
+	assert(*(int*)v->get(v, 0) == 100);
+	assert(*(int*)v->get(v, 1) == 101);
+	assert(*(int*)v->get(v, 2) == 0);
+	assert(*(int*)v->get(v, 3) == 0);
 	assert(*(int*)v->get(v, 4) == 0);
+	v->delete(v);
 }
 
 void test_delete()
@@ -119,30 +146,41 @@ void test_delete()
 
 void test_concatenate()
 {
-	struct basic_vector* v1 = CreateVectorN(5, sizeof(char));
-
+	struct basic_vector* v1 = CreateVectorN(3, sizeof(char*));
 	struct basic_vector* v2 = CreateVectorN(5, sizeof(int));
 	assert(concatenate(v1, v2) == NULL);
 
-	struct basic_vector* v3 = CreateVectorN(7, sizeof(char));
-	char a = 'a';
+	struct basic_vector* v3 = CreateVectorN(4, sizeof(char*));
+	char* a = "ab";
+	v1->set(v1, 0, &a, sizeof(a));
+	a = "ad";
+	v1->set(v1, 1, &a, sizeof(a));
+	a = "lk";
+	v1->set(v1, 2, &a, sizeof(a));
+
+	a = "hy";
 	v3->set(v3, 0, &a, sizeof(a));
-	char b = 'b';
-	v1->set(v1, 0, &b, sizeof(b));
-
-	// поэлеметно проверить результат конкатенации
-	// можно вопроизвести в тестах ошибку
-
-	// явно копировать элемент перед тем, как передавать в printf
-	// локальная переменная <- указатель
+	a = "rtt";
+	v3->set(v3, 1, &a, sizeof(a));
+	a = "y";
+	v3->set(v3, 2, &a, sizeof(a));
+	a = "tw";
+	v3->set(v3, 3, &a, sizeof(a));
 
 	struct basic_vector* v4 = concatenate(v1, v3);
-	assert(v1->size == 5);
-	assert(v3->size == 7);
-	assert(v4->size == 12);
-	assert(v4->_element_size == sizeof(char));
-	assert(*(char*)v4->get(v4, 0) == b);
-	assert(*(char*)v4->get(v4, 5) == a);
+	assert(v4->size == 7);
+	assert(v4->_element_size == sizeof(char*));
+	assert(strcmp(*(char**)v4->get(v4, 0), "ab") == 0);
+	assert(strcmp(*(char**)v4->get(v4, 1), "ad") == 0);
+	assert(strcmp(*(char**)v4->get(v4, 2), "lk") == 0);
+	assert(strcmp(*(char**)v4->get(v4, 3), "hy") == 0);
+	assert(strcmp(*(char**)v4->get(v4, 4), "rtt") == 0);
+	assert(strcmp(*(char**)v4->get(v4, 5), "y") == 0);
+	assert(strcmp(*(char**)v4->get(v4, 6), "tw") == 0);
+	v1->delete(v1);
+	v2->delete(v2);
+	v3->delete(v3);
+	v4->delete(v4);
 }
 
 int comp_int(const int* a, const int* b)
@@ -163,14 +201,29 @@ void test_sort()
 	v->set(v, 3, &a, sizeof(a));
 	a = 1;
 	v->set(v, 4, &a, sizeof(a));
-
 	sort(v, &comp_int);
-
 	assert(*(int*)v->get(v, 0) == 1);
 	assert(*(int*)v->get(v, 1) == 5);
 	assert(*(int*)v->get(v, 2) == 9);
 	assert(*(int*)v->get(v, 3) == 29);
 	assert(*(int*)v->get(v, 4) == 50);
+	v->delete(v);
+
+	struct basic_vector* v1 = CreateVectorN(4, sizeof(char*));
+	char* a1 = "hello";
+	v1->set(v1, 0, &a1, sizeof(a1));
+	a1 = "my";
+	v1->set(v1, 1, &a1, sizeof(a1));
+	a1 = "lovely";
+	v1->set(v1, 2, &a1, sizeof(a1));
+	a1 = "project!";
+	v1->set(v1, 3, &a1, sizeof(a1));
+	sort(v1, string_cmp_for_vector);
+	assert(strcmp(*(char**)v1->get(v1, 0), "hello") == 0);
+	assert(strcmp(*(char**)v1->get(v1, 1), "lovely") == 0);
+	assert(strcmp(*(char**)v1->get(v1, 2), "my") == 0);
+	assert(strcmp(*(char**)v1->get(v1, 3), "project!") == 0);
+	v1->delete(v1);
 }
 
 int* f1(const char* ch)
@@ -205,6 +258,8 @@ void test_map_back()
 	assert(*(int*)v2->get(v2, 2) == 1);
 	assert(*(int*)v2->get(v2, 3) == 2);
 	assert(*(int*)v2->get(v2, 4) == 2);
+	v1->delete(v1);
+	v2->delete(v2);
 }
 
 char* g1(const int* i)
@@ -227,6 +282,8 @@ void test_map_new()
 	assert(*(char*)v2->get(v2, 1) == 'e');
 	assert(*(char*)v2->get(v2, 2) == 'f');
 	assert(*(char*)v2->get(v2, 3) == 'g');
+	v1->delete(v1);
+	v2->delete(v2);
 }
 
 bool h1(const int* a)
@@ -241,18 +298,18 @@ void test_where()
 	{
 		v1->set(v1, i, &i, sizeof(int));
 	}
-
 	struct basic_vector* v2 = CreateVectorN(5, sizeof(char));
 	assert(where(v1, h1, v2) == NULL);
-
 	struct basic_vector* v3 = CreateVectorN(1, sizeof(int));
 	where(v1, h1, v3);
-
 	assert(v3->size == 4);
 	assert(*(int*)v3->get(v3, 0) == 0);
 	assert(*(int*)v3->get(v3, 1) == 7);
 	assert(*(int*)v3->get(v3, 2) == 8);
 	assert(*(int*)v3->get(v3, 3) == 9);
+	v1->delete(v1);
+	v2->delete(v2);
+	v3->delete(v3);
 }
 
 void test_all()
